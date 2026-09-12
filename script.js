@@ -4,7 +4,8 @@ const CONFIG = {
   ticker: "$PEPTO",
   // mintAddress removed as requested - add back if you need to display it again
   // mintAddress: "Ak9VSiYdt6959zRAPEZxWqfv5owTDReSDFdU6dktpump",
-  pumpfunUrl: "https://pump.fun/coin/Ak9VSiYdt6959zRAPEZxWqfv5owTDReSDFdU6dktpump",
+  // pumpfunUrl removed as requested - will add pepto address later
+  pumpfunUrl: "",
   xUrl: "https://x.com/PEPTODANGEN",
 };
 
@@ -24,13 +25,32 @@ const CONFIG = {
       if (el) el.href = pumpUrl;
     });
 
+    // If pump address removed, show toast instead of navigating
+    if (pumpUrl === "#") {
+      const toast = $("#toast");
+      function showComingSoon(e) {
+        e.preventDefault();
+        if (!toast) return;
+        toast.textContent = "BUY link coming soon — pepto address will be added later";
+        toast.classList.add("show");
+        clearTimeout(showComingSoon._t);
+        showComingSoon._t = setTimeout(() => toast.classList.remove("show"), 2500);
+      }
+      buyIds.forEach(id => {
+        const el = $(id);
+        if (el) el.addEventListener("click", showComingSoon);
+      });
+      const footerPump = $("#footerPump");
+      if (footerPump) footerPump.addEventListener("click", showComingSoon);
+    }
+
     // Community cards + footer (X only - Telegram removed)
     const xCard = $("#xCard"), footerX = $("#footerX");
     if (xCard) xCard.href = xUrl;
     if (footerX) footerX.href = xUrl;
 
     const footerPump = $("#footerPump");
-    if (footerPump) footerPump.href = pumpUrl;
+    if (footerPump && pumpUrl !== "#") footerPump.href = pumpUrl;
 
     // OG url
     const ogUrl = document.querySelector('meta[property="og:url"]');
